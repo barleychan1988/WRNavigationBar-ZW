@@ -570,8 +570,7 @@ static int wrPushDisplayCount = 0;
     __weak typeof (self) weakSelf = self;
     id<UIViewControllerTransitionCoordinator> coor = [self.topViewController transitionCoordinator];
     if ([coor initiallyInteractive] == YES) {
-        NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
-        if ([sysVersion floatValue] >= 10) {
+        if (@available(iOS 10.0, *)) {
             [coor notifyWhenInteractionChangesUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
                 __strong typeof (self) pThis = weakSelf;
                 [pThis dealInteractionChanges:context];
