@@ -248,7 +248,7 @@ static char kWRBackgroundImageKey;
         // add a image(nil color) to _UIBarBackground make it clear
         [self setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
         self.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds), [WRNavigationBar navBarBottom])];
-        self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         // _UIBarBackground is first subView for navigationBar
         [self.subviews.firstObject insertSubview:self.backgroundView atIndex:0];
     }
@@ -861,15 +861,18 @@ static char kWRSystemNavBarTitleColorKey;
         [self setPushToNextVCFinished:NO];
         [self.navigationController setNeedsNavigationBarUpdateForTitleColor:[self wr_navBarTitleColor]];
       
-        UIImage *barBgImage = [self wr_navBarBackgroundImage];
-        if (barBgImage != nil) {
-            [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundImage:barBgImage];
-        } else {
-            if ([WRNavigationBar needUpdateNavigationBar:self]) {
-                [self.navigationController setNeedsNavigationBarUpdateForBarTintColor:[self wr_navBarBarTintColor]];
-            }
+      UIImage *barBgImage = [self wr_navBarBackgroundImage];
+      if (barBgImage != nil) {
+        [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundImage:barBgImage];
+      } else {
+        if ([WRNavigationBar needUpdateNavigationBar:self]) {
+          [self.navigationController setNeedsNavigationBarUpdateForBarTintColor:[self wr_navBarBarTintColor]];
         }
-        [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundAlpha:[self wr_navBarBackgroundAlpha]];
+      }
+      [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundAlpha:[self wr_navBarBackgroundAlpha]];
+      [self.navigationController setNeedsNavigationBarUpdateForTintColor:[self wr_navBarTintColor]];
+      [self.navigationController setNeedsNavigationBarUpdateForTitleColor:[self wr_navBarTitleColor]];
+      [self.navigationController setNeedsNavigationBarUpdateForShadowImageHidden:[self wr_navBarShadowImageHidden]];
     }
     [self wr_viewWillAppear:animated];
 }
@@ -885,21 +888,6 @@ static char kWRSystemNavBarTitleColorKey;
 {
     if ([self isRootViewController] == NO) {
         self.pushToCurrentVCFinished = YES;
-    }
-    if ([self canUpdateNavigationBar] == YES)
-    {
-        UIImage *barBgImage = [self wr_navBarBackgroundImage];
-        if (barBgImage != nil) {
-            [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundImage:barBgImage];
-        } else {
-            if ([WRNavigationBar needUpdateNavigationBar:self]) {
-                [self.navigationController setNeedsNavigationBarUpdateForBarTintColor:[self wr_navBarBarTintColor]];
-            }
-        }
-        [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundAlpha:[self wr_navBarBackgroundAlpha]];
-        [self.navigationController setNeedsNavigationBarUpdateForTintColor:[self wr_navBarTintColor]];
-        [self.navigationController setNeedsNavigationBarUpdateForTitleColor:[self wr_navBarTitleColor]];
-        [self.navigationController setNeedsNavigationBarUpdateForShadowImageHidden:[self wr_navBarShadowImageHidden]];
     }
     [self wr_viewDidAppear:animated];
 }
