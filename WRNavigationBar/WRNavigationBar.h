@@ -102,6 +102,7 @@
 - (UIStatusBarStyle)wr_statusBarStyle;
 
 /** record current ViewController navigationBar shadowImage hidden */
+// 如果现实导航栏底部分割线时，工程需引入“separatorLine”图片资源文件  annotated by barleychan
 - (void)wr_setNavBarShadowImageHidden:(BOOL)hidden;
 - (BOOL)wr_navBarShadowImageHidden;
 

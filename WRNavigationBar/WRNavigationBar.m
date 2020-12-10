@@ -9,32 +9,35 @@
 
 #import "WRNavigationBar.h"
 #import <objc/runtime.h>
-#import <objc/message.h>
 #import "sys/utsname.h"
 
 @implementation WRNavigationBar
 
 + (BOOL)isIphoneX {
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
-    if ([platform isEqualToString:@"i386"] || [platform isEqualToString:@"x86_64"]) {
-        // judgment by height when in simulators
-        return (CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(375, 812)) ||
-                CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(812, 375)));
-    }
-    BOOL isIPhoneX = [platform isEqualToString:@"iPhone10,3"] || [platform isEqualToString:@"iPhone10,6"];
-    return isIPhoneX;
+  CGSize size = [UIScreen mainScreen].bounds.size;
+  return (CGSizeEqualToSize(size, CGSizeMake(375, 812)) ||
+          CGSizeEqualToSize(size, CGSizeMake(812, 375)) ||
+          CGSizeEqualToSize(size, CGSizeMake(896, 414)) ||
+          CGSizeEqualToSize(size, CGSizeMake(414, 896)) ||
+          CGSizeEqualToSize(size, CGSizeMake(360, 780)) ||
+          CGSizeEqualToSize(size, CGSizeMake(780, 360)) ||
+          CGSizeEqualToSize(size, CGSizeMake(390, 844)) ||
+          CGSizeEqualToSize(size, CGSizeMake(844, 390)) ||
+          CGSizeEqualToSize(size, CGSizeMake(428, 926)) ||
+          CGSizeEqualToSize(size, CGSizeMake(926, 428)));
 }
 + (BOOL)isIphone11 {
   CGSize size = [UIScreen mainScreen].bounds.size;
-  if (size.height == 812) {
+  if (CGSizeEqualToSize(size, CGSizeMake(896, 414)) ||
+      CGSizeEqualToSize(size, CGSizeMake(414, 896))) {
     return YES;
   }
   return NO;
 }
 + (CGFloat)navBarBottom {
-    return ([self isIphoneX] || [self isIphone11]) ? 88 : 64;
+  CGFloat height = 44.0;
+  height += [UIApplication sharedApplication].statusBarFrame.size.height;
+  return height;
 }
 + (CGFloat)tabBarHeight {
     return [self isIphoneX] ? 83 : 49;
@@ -857,6 +860,16 @@ static char kWRSystemNavBarTitleColorKey;
         }
         [self setPushToNextVCFinished:NO];
         [self.navigationController setNeedsNavigationBarUpdateForTitleColor:[self wr_navBarTitleColor]];
+      
+        UIImage *barBgImage = [self wr_navBarBackgroundImage];
+        if (barBgImage != nil) {
+            [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundImage:barBgImage];
+        } else {
+            if ([WRNavigationBar needUpdateNavigationBar:self]) {
+                [self.navigationController setNeedsNavigationBarUpdateForBarTintColor:[self wr_navBarBarTintColor]];
+            }
+        }
+        [self.navigationController setNeedsNavigationBarUpdateForBarBackgroundAlpha:[self wr_navBarBackgroundAlpha]];
     }
     [self wr_viewWillAppear:animated];
 }
